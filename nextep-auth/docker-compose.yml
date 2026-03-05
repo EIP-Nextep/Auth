@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:15
+    container_name: nextep-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: nextep_admin
+      POSTGRES_PASSWORD: nextep_password
+      POSTGRES_DB: nextep_auth_db
+    ports:
+      - "5444:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
