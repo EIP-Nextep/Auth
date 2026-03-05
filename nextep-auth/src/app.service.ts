@@ -27,4 +27,19 @@ export class AuthService {
       select: { id: true, email: true, role: true }
     });
   }
+
+  async login(email: string, pass: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user)
+      throw new UnauthorizedException('Identifiants incorrects');
+
+    const password = await bcrypt.compare(pass, user.password);
+    if (!password)
+      throw new UnauthorizedException('Identifiants incorrects');
+
+    const payload = { sub: user.id, email: user.email, role: user.role };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  }
 }
